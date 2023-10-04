@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'api_info.dart';
 
 const sampleURL =
-    "https://www.kamis.or.kr/service/price/xml.do?action=dailySalesList&p_cert_key=test&p_cert_id=test&p_returntype=json";
+    "https://www.kamis.or.kr/service/price/xml.do?action=dailySalesList&p_cert_key=$apiKey&p_cert_id=$apiId&p_returntype=json";
 
 class KamisOpenAPI {
   static Future<dynamic> loadAPI() async {
