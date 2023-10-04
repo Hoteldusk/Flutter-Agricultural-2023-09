@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'api_info.dart';
@@ -16,8 +18,10 @@ class KamisOpenAPI {
     }
 
     if (response != null) {
-      debugPrint(response.body); // 또는 원하는 응답 데이터 처리
-      return response; // 응답 반환
+      // debugPrint(response.body); // 또는 원하는 응답 데이터 처리
+      var result = jsonDecode(response.body);
+
+      return result; // 응답 반환
     }
 
     return null; // 에러 처리 또는 응답이 없을 때 null 반환

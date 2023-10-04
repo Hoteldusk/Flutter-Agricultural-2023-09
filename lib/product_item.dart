@@ -1,67 +1,78 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 
 class ProductItem extends StatelessWidget {
   const ProductItem({
     super.key,
+    this.product,
   });
-
+  final product;
   @override
   Widget build(BuildContext context) {
+    // todo: 뺄셈연산 수정중
+    var sub = (num.tryParse(product['dpr1']) ?? 0) -
+        (num.tryParse(product['dpr2']) ?? 0);
+
+    var subData = num.tryParse(product['dpr1']).toString();
+
     return Container(
-      padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+      padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey))),
-      child: Row(
+      child: Column(
         children: [
-          const Expanded(
-            flex: 1,
-            child: Image(
-              image: AssetImage("images/apple.jpg"),
-              fit: BoxFit.cover,
-            ),
+          Text(
+            product['productName'],
+            style: const TextStyle(fontSize: 20),
           ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              height: 130,
-              padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        "사과",
-                        style: TextStyle(fontSize: 25),
-                      ),
-                      Text(
-                        "과일류",
-                        style: TextStyle(fontSize: 15, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                  Row(
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(
+                  height: 100,
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "54,974",
-                        style: TextStyle(fontSize: 20),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            product['category_name'],
+                            style: const TextStyle(
+                                fontSize: 15, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            product['dpr1'],
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.red),
+                          ),
+                          const Icon(
+                            Icons.arrow_drop_up,
+                            color: Colors.red,
+                            size: 50,
+                          ),
+                        ],
                       ),
                       Text(
-                        "+4.60",
-                        style: TextStyle(fontSize: 20),
+                        subData,
+                        style: const TextStyle(fontSize: 20, color: Colors.red),
                       ),
-                      Icon(
-                        Icons.arrow_drop_up,
-                        color: Colors.red,
-                        size: 50,
+                      const Text(
+                        "4.60%",
+                        style: TextStyle(fontSize: 20, color: Colors.red),
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ],
       ),

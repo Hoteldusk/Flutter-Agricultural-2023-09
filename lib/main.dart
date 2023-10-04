@@ -9,26 +9,43 @@ void main() {
   ));
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  var productList = [];
+
+  getData() async {
+    var result = await KamisOpenAPI.loadAPI();
+    var protoProductList = result['price'];
+    setState(() {
+      for (var i = 0; i < protoProductList.length; i++) {
+        if (protoProductList[i]['product_cls_name'] == "소매") {
+          productList.add(protoProductList[i]);
+        }
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                KamisOpenAPI.loadAPI();
-              },
-              icon: const Icon(Icons.api_outlined))
-        ],
-      ),
+      appBar: AppBar(),
       body: ListView.builder(
         // Count 는 api데이터에서 소매리스트를 추출한 리스트의 길이
-        itemCount: 70,
+        itemCount: productList.length,
         itemBuilder: (c, i) {
-          return const ProductItem();
+          return ProductItem(product: productList[i]);
         },
       ),
       floatingActionButton: FloatingActionButton(
