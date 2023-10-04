@@ -42,3 +42,17 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+firebase_options.*
+node_modules/
+/.firebase
+firebase.*
+firebase_app_id_file.*
+
+# Android Profiling
+*.hprof
+
+# api
+/api/kamis_api.*
