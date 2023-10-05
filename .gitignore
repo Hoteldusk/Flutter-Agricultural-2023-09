@@ -53,6 +53,3 @@ firebase_app_id_file.*
 
 # Android Profiling
 *.hprof
-
-# api
-/api/kamis_api.*

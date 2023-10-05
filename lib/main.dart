@@ -1,4 +1,4 @@
-import 'package:agricultural/product_item.dart';
+import 'package:agricultural/product_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:agricultural/api/kamis_api.dart';
 
@@ -18,6 +18,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   var productList = [];
+  var _tab = 0;
 
   getData() async {
     var result = await KamisOpenAPI.loadAPI();
@@ -41,18 +42,31 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: ListView.builder(
-        // Count 는 api데이터에서 소매리스트를 추출한 리스트의 길이
-        itemCount: productList.length,
-        itemBuilder: (c, i) {
-          return ProductItem(product: productList[i]);
-        },
-      ),
+      body: [
+        ProductListPage(productList: productList),
+        const Text("마이페이지")
+      ][_tab],
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: const Icon(Icons.arrow_upward),
       ),
-      // bottomNavigationBar: BottomNavigationBar(items: const []),
+      bottomNavigationBar: BottomNavigationBar(
+          onTap: (i) {
+            setState(() {
+              _tab = i;
+            });
+          },
+          currentIndex: _tab,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: "MyPage",
+            ),
+          ]),
     );
   }
 }

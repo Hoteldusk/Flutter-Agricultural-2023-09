@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- <uses-permissons android:name="android.permisson.INTERNET" /> -->
     <application
         android:label="agricultural"
         android:name="${applicationName}"
