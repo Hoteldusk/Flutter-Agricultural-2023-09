@@ -1,8 +1,18 @@
-import 'package:agricultural/product_list_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
+import 'package:agricultural/firebase_options.dart';
 import 'package:agricultural/api/kamis_api.dart';
 
-void main() {
+import 'package:agricultural/mypage.dart';
+import 'package:agricultural/product_list_page.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: App(),
@@ -44,7 +54,7 @@ class _AppState extends State<App> {
       appBar: AppBar(),
       body: [
         ProductListPage(productList: productList),
-        const Text("마이페이지")
+        const MyPage(),
       ][_tab],
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
