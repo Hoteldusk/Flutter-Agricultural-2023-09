@@ -85,40 +85,89 @@ class _MyPageState extends State<MyPage> {
                 print('해당하는 맵을 찾을 수 없습니다. : $e');
               }
 
-              var benefit =
-                  todayPrice - (indexData['total_price'] / indexData['count']);
+              var benefit = (todayPrice -
+                      (indexData['total_price'] / indexData['count'])) *
+                  indexData['count'];
 
-              return Container(
-                height: 100,
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: Colors.grey),
+              var benefitPercent = (benefit / indexData['total_price']) * 100;
+
+              Future<dynamic> showSellDialog() {
+                return showDialog(
+                    context: context,
+                    builder: (c) {
+                      return Dialog(
+                        child: SizedBox(
+                          height: 200,
+                          width: 200,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Text("Sell"),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('매도'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    });
+              }
+
+              return GestureDetector(
+                onTap: () {
+                  showSellDialog();
+                },
+                child: Container(
+                  height: 100,
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.grey),
+                    ),
                   ),
-                ),
-                child: Column(
-                  children: [
-                    Text(indexData['name']),
-                    Row(
-                      children: [
-                        const Text("보유개수 : "),
-                        Text(indexData['count'].toString()),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text("평단가 : "),
-                        Text((indexData['total_price'] / indexData['count'])
-                            .toString()),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        // Text("수익 : $todayPrice"),
-                        Text("득손실 : $benefit"),
-                      ],
-                    )
-                  ],
+                  child: Column(
+                    children: [
+                      Text(
+                        indexData['name'],
+                        style: const TextStyle(fontSize: 17),
+                      ),
+                      Row(
+                        children: [
+                          const Text("보유개수 : "),
+                          Text(indexData['count'].toString()),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              const Text("총 투자금 : "),
+                              Text((indexData['total_price']).toString()),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Text("평단가 : "),
+                              Text((indexData['total_price'] /
+                                      indexData['count'])
+                                  .toStringAsFixed(0)),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("득손실 : ${benefit.toStringAsFixed(0)}"),
+                          Text("수익률 : ${benefitPercent.toStringAsFixed(1)}%"),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               );
             },

@@ -8,12 +8,13 @@ final _firestore = FirebaseFirestore.instance;
 class UserStore extends ChangeNotifier {
   var userData = {};
 
-  initUserData(userId) async {
+  initUserData(userId, nickname) async {
     try {
       await _firestore.collection('users').add({
         'money': 1000000,
         'products': [],
         'userId': userId,
+        'nickname': nickname,
       });
     } catch (e) {
       print("initUserData 오류발생 $e");
@@ -38,4 +39,11 @@ class UserStore extends ChangeNotifier {
       print('해당 사용자를 찾을 수 없습니다.');
     }
   }
+
+  void updateUserData(userData) {
+    this.userData = userData;
+    notifyListeners();
+  }
+
+  void buyListUpdate(buyList) {}
 }

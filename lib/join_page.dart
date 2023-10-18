@@ -49,7 +49,7 @@ class _JoinPageState extends State<JoinPage> {
         });
   }
 
-  _join() async {
+  _join(nickname) async {
     try {
       var result = await widget.auth.createUserWithEmailAndPassword(
         email: emailText,
@@ -61,7 +61,7 @@ class _JoinPageState extends State<JoinPage> {
       // DB에 회원 기본정보 저장
       // id : auth에 저장된 id , money : 1000000 , product : 빈배열
       String userId = widget.auth.currentUser!.uid;
-      context.read<UserStore>().initUserData(userId);
+      context.read<UserStore>().initUserData(userId, nickname);
 
       // 로그인화면으로 이동
       Navigator.pop(context);
@@ -107,7 +107,7 @@ class _JoinPageState extends State<JoinPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _join,
+                onPressed: _join(nickNameText),
                 child: const Text('회원가입'),
               ),
             ),

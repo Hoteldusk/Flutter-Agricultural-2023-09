@@ -13,10 +13,10 @@ class ProductListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Row(children: [
-          Text("TODO")
-          // TODO : 정렬 버튼 구현
-        ]),
+        // const Row(children: [
+        //   Text("TODO")
+        //   // TODO : 정렬 버튼 구현
+        // ]),
         Expanded(
           child: ListView.builder(
             itemCount: productList.length,
