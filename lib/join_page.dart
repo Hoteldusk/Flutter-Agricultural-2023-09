@@ -107,7 +107,7 @@ class _JoinPageState extends State<JoinPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _join(nickNameText),
+                onPressed: () => _join(nickNameText),
                 child: const Text('회원가입'),
               ),
             ),

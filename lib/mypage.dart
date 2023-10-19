@@ -4,7 +4,7 @@ import 'package:agricultural/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MyPage extends StatefulWidget {
+class MyPage extends StatelessWidget {
   const MyPage({
     super.key,
     this.auth,
@@ -13,20 +13,8 @@ class MyPage extends StatefulWidget {
   final auth;
   final productList;
   @override
-  State<MyPage> createState() => _MyPageState();
-}
-
-class _MyPageState extends State<MyPage> {
-  @override
-  void initState() {
-    super.initState();
-    print("myPage");
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var data = context.watch<UserStore>().userData;
-    var storeFunc = context.read<UserStore>();
+    var userData = context.watch<UserStore>().userData;
 
     // list<map> 탐색방법: firstWhere 사용 (해당하는 첫 번째 맵만 찾음)
     // try {
@@ -41,7 +29,7 @@ class _MyPageState extends State<MyPage> {
     return Column(
       children: [
         Text(
-          "${widget.auth.currentUser!.displayName} 님 반갑습니다",
+          "${auth.currentUser!.displayName} 님 반갑습니다",
           style: const TextStyle(
             fontSize: 20,
           ),
@@ -61,7 +49,7 @@ class _MyPageState extends State<MyPage> {
                 style: TextStyle(fontSize: 20),
               ),
               Text(
-                data['money'].toString(),
+                userData['money'].toStringAsFixed(0),
                 style: const TextStyle(fontSize: 20),
               ),
             ],
@@ -69,14 +57,14 @@ class _MyPageState extends State<MyPage> {
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: data['products'].length,
+            itemCount: userData['products'].length,
             itemBuilder: (c, i) {
-              var indexData = data['products'][i];
+              var indexData = userData['products'][i];
               var todayPrice = indexData['total_price'] / indexData['count'];
 
               try {
                 //   map자료형으로 반환
-                var resultFirstWhere = widget.productList.firstWhere(
+                var resultFirstWhere = productList.firstWhere(
                     (map) => map['productName'] == indexData['name']);
                 print('firstWhere 사용 결과: $resultFirstWhere');
                 todayPrice =
@@ -91,29 +79,131 @@ class _MyPageState extends State<MyPage> {
 
               var benefitPercent = (benefit / indexData['total_price']) * 100;
 
-              Future<dynamic> showSellDialog() {
+              Future<dynamic> showBuyErrorDialog(String errorText) {
                 return showDialog(
-                    context: context,
-                    builder: (c) {
-                      return Dialog(
-                        child: SizedBox(
-                          height: 200,
-                          width: 200,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              const Text("Sell"),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('매도'),
-                              ),
-                            ],
-                          ),
+                  context: context,
+                  builder: (c) {
+                    return Dialog(
+                      child: SizedBox(
+                        height: 300,
+                        width: 300,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(errorText),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("확인"),
+                            ),
+                          ],
                         ),
-                      );
-                    });
+                      ),
+                    );
+                  },
+                );
+              }
+
+              Future<dynamic> showSellDialog() {
+                var countText = "";
+
+                return showDialog(
+                  context: context,
+                  builder: (c) {
+                    return Dialog(
+                      child: SizedBox(
+                        height: 400,
+                        width: 400,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            const Text(
+                              "상품 매도",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                  "상품명 : ${indexData['name']}",
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                                Text(
+                                  "상품개수 : ${indexData['count']}",
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              padding:
+                                  const EdgeInsets.fromLTRB(100, 0, 100, 0),
+                              child: Center(
+                                child: TextField(
+                                  textAlign: TextAlign.center,
+                                  onChanged: (text) {
+                                    countText = text;
+                                  },
+                                  decoration:
+                                      const InputDecoration(labelText: '매도수량'),
+                                ),
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                bool nextLogic;
+                                try {
+                                  nextLogic = true;
+                                  int.parse(countText);
+                                } on FormatException {
+                                  nextLogic = false;
+                                  showBuyErrorDialog("숫자만 입력해주세요");
+                                }
+                                // 보유 숫자보다 입력숫자가 많으면
+                                if (indexData['count'] < int.parse(countText) &&
+                                    nextLogic) {
+                                  showBuyErrorDialog("보유 수량이 부족합니다");
+                                  // 적으면
+                                } else if (indexData['count'] >=
+                                        int.parse(countText) &&
+                                    nextLogic) {
+                                  // 0개되면 삭제
+                                  if (indexData['count'] -
+                                          int.parse(countText) ==
+                                      0) {
+                                    userData['money'] +=
+                                        (todayPrice * indexData['count']);
+                                    userData['products'].removeAt(i);
+                                    context
+                                        .read<UserStore>()
+                                        .updateUserData(userData);
+                                  } else {
+                                    var averagePrice = int.parse(countText) *
+                                        (indexData['total_price'] /
+                                            indexData['count']);
+
+                                    userData['products'][i]['total_price'] -=
+                                        averagePrice;
+
+                                    userData['products'][i]['count'] -=
+                                        int.parse(countText);
+
+                                    userData['money'] += averagePrice;
+
+                                    context
+                                        .read<UserStore>()
+                                        .updateUserData(userData);
+                                  }
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: const Text('매도'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
               }
 
               return GestureDetector(
@@ -146,7 +236,8 @@ class _MyPageState extends State<MyPage> {
                           Row(
                             children: [
                               const Text("총 투자금 : "),
-                              Text((indexData['total_price']).toString()),
+                              Text((indexData['total_price'])
+                                  .toStringAsFixed(0)),
                             ],
                           ),
                           Row(

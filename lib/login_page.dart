@@ -76,46 +76,63 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          TextField(
-            onChanged: (text) {
-              emailText = text;
-            },
-            decoration: const InputDecoration(labelText: '이메일'),
+          const Column(
+            children: [
+              Text(
+                "글 팜",
+                style: TextStyle(fontSize: 50),
+              ),
+              Text(
+                "농산물 모의투자",
+                style: TextStyle(fontSize: 20, color: Colors.grey),
+              ),
+            ],
           ),
-          const SizedBox(height: 16.0),
-          TextField(
-            onChanged: (text) {
-              pwText = text;
-            },
-            obscureText: true,
-            decoration: const InputDecoration(labelText: '비밀번호'),
-          ),
-          const SizedBox(height: 60.0),
-          // 로그인 버튼
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _login,
-              child: const Text('로그인'),
-            ),
-          ),
-          const SizedBox(height: 8.0),
-          // 회원가입 버튼
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => JoinPage(auth: _auth),
-                  ),
-                );
-              },
-              child: const Text('회원가입'),
-            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextField(
+                onChanged: (text) {
+                  emailText = text;
+                },
+                decoration: const InputDecoration(labelText: '이메일'),
+              ),
+              const SizedBox(height: 16.0),
+              TextField(
+                onChanged: (text) {
+                  pwText = text;
+                },
+                obscureText: true,
+                decoration: const InputDecoration(labelText: '비밀번호'),
+              ),
+              const SizedBox(height: 60.0),
+              // 로그인 버튼
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _login,
+                  child: const Text('로그인'),
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              // 회원가입 버튼
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => JoinPage(auth: _auth),
+                      ),
+                    );
+                  },
+                  child: const Text('회원가입'),
+                ),
+              ),
+            ],
           ),
         ],
       ),

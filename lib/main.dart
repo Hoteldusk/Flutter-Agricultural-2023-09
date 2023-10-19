@@ -40,9 +40,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: const LoginPage(),
+    return const Scaffold(
+      body: LoginPage(),
     );
   }
 }

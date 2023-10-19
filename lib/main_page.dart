@@ -47,7 +47,16 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+          title: const Row(
+        children: [
+          Text("글팜    "),
+          Text(
+            "농산물 모의투자",
+            style: TextStyle(fontSize: 15),
+          ),
+        ],
+      )),
       body: [
         ProductListPage(productList: productList),
         MyPage(

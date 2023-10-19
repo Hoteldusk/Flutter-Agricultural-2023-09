@@ -17,6 +17,7 @@ class ProductItem extends StatelessWidget {
 
     var todayPrice = int.parse(product['dpr1'].replaceAll(',', ''));
     var yesterdayPrice;
+    var userData = context.watch<UserStore>().userData;
 
     if (product['dpr2'] is String) {
       yesterdayPrice = int.parse(product['dpr2'].replaceAll(',', ''));
@@ -62,7 +63,6 @@ class ProductItem extends StatelessWidget {
       );
     }
 
-    var userData = context.watch<UserStore>().userData;
     Future<dynamic> showBuyDialog() {
       var countText = "";
 
