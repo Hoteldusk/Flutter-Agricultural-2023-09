@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 final _firestore = FirebaseFirestore.instance;
 
 class UserStore extends ChangeNotifier {
-  var userData = {};
+  var userId = "";
+  Map<String, dynamic> userData = {};
 
   initUserData(userId, nickname) async {
     try {
@@ -31,7 +32,7 @@ class UserStore extends ChangeNotifier {
     if (querySnapshot.docs.isNotEmpty) {
       // 결과에서 데이터를 추출합니다.
       userData = querySnapshot.docs.first.data();
-
+      userId = targetUserId;
       // 예제: userid 및 money 출력
       // print('UserID: ${userData['userId']}');
       // print('Money: ${userData['money']}');
@@ -42,8 +43,37 @@ class UserStore extends ChangeNotifier {
 
   void updateUserData(userData) {
     this.userData = userData;
+    updateDB();
     notifyListeners();
   }
 
-  void buyListUpdate(buyList) {}
+  void updateDB() async {
+    try {
+      // Firestore 컬렉션 참조
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
+
+      // userId를 기준으로 문서를 찾기
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .where('userId', isEqualTo: userId)
+              .get();
+
+      // userId에 해당하는 문서가 존재하는지 확인
+      if (querySnapshot.docs.isNotEmpty) {
+        // userId에 해당하는 첫 번째 문서의 참조를 얻기
+        DocumentReference userDocRef = users.doc(querySnapshot.docs.first.id);
+
+        // 문서 업데이트
+        await userDocRef.update(userData);
+
+        print('문서 업데이트 성공!');
+      } else {
+        print('해당 userId를 가진 문서를 찾을 수 없습니다.');
+      }
+    } catch (e) {
+      print('문서 업데이트 오류: $e');
+    }
+  }
 }
